@@ -1,6 +1,7 @@
 #include "reader.h"         // Provides ImuRecord and readTextFile/readBinaryFile.
 #include "imu_statistics.h" // Provides computeImuMean(), computeImuVariance(), computeImuStd(), etc.
 #include "calibration.h"    // Provides calculateBias() and calculateScale().
+#include "correction.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -171,6 +172,16 @@ int main()
     std::cout << std::endl;
     printImuData(rlgScaleUnc, "RLG Scale Uncertainity", "Scale Uncertainity");
     std::cout << std::endl;
+
+
+    std::vector<ImuRecord> correctedData = applyBiasCorrection(memsDownData, memsBias);
+
+    // Write the corrected data to a new file.
+    writeImuDataToFile(correctedData, "../results/x_adi_down_corrected.txt");
+
+    // Optionally, print a message.
+    std::cout << "Bias correction applied and results saved to ../results/x_adi_down_corrected.txt\n";
+
 
     return 0;
 }

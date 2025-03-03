@@ -16,9 +16,9 @@ std::vector<ImuRecord> correctDownData(const std::vector<ImuRecord> &data,
         corrected.epoch = rec.epoch; // keep the same timestamp
 
         // Gyro: true = (measured - bias) / (1 + scale)
-        corrected.x_gyro = (rec.x_gyro - bias.x_gyro) / (1.0 + scale.x_gyro);
-        corrected.y_gyro = (rec.y_gyro - bias.y_gyro) / (1.0 + scale.y_gyro);
-        corrected.z_gyro = (rec.z_gyro - bias.z_gyro) / (1.0 + scale.z_gyro);
+        corrected.x_gyro = -(rec.x_gyro - bias.x_gyro) / (1.0 + scale.x_gyro);
+        corrected.y_gyro = -(rec.y_gyro - bias.y_gyro) / (1.0 + scale.y_gyro);
+        corrected.z_gyro = -(rec.z_gyro - bias.z_gyro) / (1.0 + scale.z_gyro);
 
         // Accel: same formula
         corrected.x_accel = (rec.x_accel - bias.x_accel) / (1.0 + scale.x_accel);

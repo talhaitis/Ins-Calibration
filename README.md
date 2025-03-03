@@ -128,13 +128,6 @@ By applying these formulas, you remove the sensor’s bias and adjust for scale 
   This branch is strictly focused on **x-axis** calibration. It reads data from “x_up” and “x_down” files, computes bias and scale, and applies corrections only to the x-axis channels for both the gyroscope and accelerometer.
 
 ---
-
-## Directory Structure
-
-INS Calibration/ ├── CMakeLists.txt ├── data/ │ ├── x_adi_down.txt # MEMS sensor "down" data (text) │ ├── x_adi_up.txt # MEMS sensor "up" data (text) │ ├── x_LN100_down.ins # RLG sensor "down" data (binary) │ └── x_LN100_up.ins # RLG sensor "up" data (binary) ├── include/ │ ├── reader.h # File-reading functions │ ├── statistics.h # Single-axis statistics (mean, variance, etc.) │ └── calibration.h # Single-axis bias/scale formulas & correction ├── src/ │ ├── reader.cpp # Implementation of readTextFile / readBinaryFile │ ├── statistics.cpp # Implementation of computeMean, etc. │ ├── calibration.cpp # Implementation of bias/scale & correction │ └── main.cpp # Main program orchestrating everything └── results/ # Output folder for corrected data files
-
-
-
 ---
 
 ## Building

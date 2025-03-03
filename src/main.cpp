@@ -174,7 +174,7 @@ int main()
     std::cout << std::endl;
 
 
-    std::vector<ImuRecord> correctedData = applyBiasCorrection(memsDownData, memsBias);
+    std::vector<ImuRecord> correctedData = correctDownData(memsDownData, memsBias, memsScale);
 
     // Write the corrected data to a new file.
     writeImuDataToFile(correctedData, "../results/x_adi_down_corrected.txt");

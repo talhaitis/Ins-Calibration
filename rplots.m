@@ -1,34 +1,39 @@
-%% Plot One Axis per Figure for MEMS Down Gyroscope Data
+%% Plot Raw vs. Bias-Corrected MEMS Down Data for Gyro X-Axis (Using Sample Index)
+% This script loads the raw and bias-corrected MEMS down data files, each with 7 columns.
+% It then plots the Gyro X-axis data (column 2) versus sample index.
 
-% File path for MEMS Down data (text file)
-memsDownFile = 'data/x_adi_down.txt';
+%% Load Raw Data
+rawFile = 'data/x_adi_down.txt';  % Ensure the file path and extension are correct.
+rawData = load(rawFile);          % rawData is assumed to be numeric with 7 columns.
 
-% Load the data (assumed to be space‐delimited with 6 columns: 
-% [x_gyro, y_gyro, z_gyro, x_accel, y_accel, z_accel])
-memsDownData = load(memsDownFile);
+% Use sample index as the x-axis (ignore column 1)
+sampleIndex = (1:size(rawData, 1))';
 
-% Define the sample rate (100 Hz)
-sampleRate = 100;  
-numSamples = size(memsDownData, 1);
-time = (0:numSamples-1)' / sampleRate;  % time vector in seconds
+% Extract Gyro X-axis data (column 2)
+rawGyroX = rawData(:,2);
 
-% Plot the X-axis gyroscope data in its own figure
+% Plot raw Gyro X data
 figure;
-plot(memsDownData(:,1), memsDownData(:,2), 'r-', 'LineWidth', 1.5);
-xlabel('Time (s)');
+plot(sampleIndex, rawGyroX, 'r-', 'LineWidth', 1.5);
+xlabel('Sample Number');
 ylabel('Gyro X (deg/s)');
-title('MEMS Down - Gyroscope X-Axis');
+title('Raw MEMS Down - Gyro X-Axis');
+grid on;
 
-% Plot the Y-axis gyroscope data in its own figure
-figure;
-plot(memsDownData(:,1), memsDownData(:,3), 'g-', 'LineWidth', 1.5);
-xlabel('Time (s)');
-ylabel('Gyro Y (deg/s)');
-title('MEMS Down - Gyroscope Y-Axis');
+%% Load Bias-Corrected Data
+correctedFile = 'results/x_adi_down_corrected.txt';  % Ensure the file path and extension are correct.
+correctedData = load(correctedFile);  % Assumes same format: 7 columns per row.
 
-% Plot the Z-axis gyroscope data in its own figure
+% Use sample index for corrected data
+sampleIndexCorrected = (1:size(correctedData, 1))';
+
+% Extract Gyro X-axis data (column 2)
+correctedGyroX = correctedData(:,2);
+
+% Plot bias-corrected Gyro X data
 figure;
-plot(memsDownData(:,1), memsDownData(:,4), 'b-', 'LineWidth', 1.5);
-xlabel('Time (s)');
-ylabel('Gyro Z (deg/s)');
-title('MEMS Down - Gyroscope Z-Axis');
+plot(sampleIndexCorrected, correctedGyroX, 'b-', 'LineWidth', 1.5);
+xlabel('Sample Number');
+ylabel('Gyro X (deg/s)');
+title('Bias-Corrected MEMS Down - Gyro X-Axis');
+grid on;

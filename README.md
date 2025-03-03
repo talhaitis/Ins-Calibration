@@ -37,33 +37,79 @@ In this project, we **focus on the x-axis** portion of that approach, though the
 
 ---
 
-## Single-Axis Model and Formulas
+## Single-Axis Bias and Scale Factor Calculation
 
-For the x-axis, we use:
+This section describes how we compute the **bias** and **scale factor** for the x-axis of both the accelerometer and the gyroscope. The approach assumes we have two sets of mean measurements:
 
-- **Bias**:  
-  \[
-  b = \frac{\text{meanUp} + \text{meanDown}}{2}.
-  \]
-
-- **Scale (Accelerometer)**:  
-  \[
-  S_{\text{accel}} = \frac{(\text{meanDown} - \text{meanUp}) - 2g}{2g}.
-  \]
-
-- **Scale (Gyroscope)**:  
-  \[
-  S_{\omega} = \frac{(\text{meanUp} - \text{meanDown}) - 2\,\omega_e\,\sin(\phi)}{2\,\omega_e\,\sin(\phi)},
-  \]
-  where \(\omega_e\) is Earth’s rotation in deg/s and \(\phi\) is latitude in radians.
-
-**Correction**:  
-Once \(b\) and \(S\) are known, raw measurements \(m\) can be corrected as:
-- **Down**: \(\text{true} = \frac{m - b}{1 + S}\)
-- **Up**:   \(\text{true} = \frac{b - m}{1 + S}\)
+- **`meanUp`**: The average measurement when the sensor axis is oriented “up.”
+- **`meanDown`**: The average measurement when the sensor axis is oriented “down.”
 
 ---
 
+### Bias
+
+To find the x-axis bias `b`, we take the average of `meanUp` and `meanDown`:
+
+b = (meanUp + meanDown) / 2
+
+yaml
+Copy
+
+This formula applies to both the gyroscope and the accelerometer. Essentially, it centers the measurement by assuming that the midpoint between the “up” and “down” readings is the zero-bias reference.
+
+---
+
+### Scale Factor
+
+The scale factor differs for the accelerometer and the gyroscope, because each has a different expected difference between the “up” and “down” orientations.
+
+1. **Accelerometer**  
+
+S_accel = [ (meanDown - meanUp) - 2g ] / (2g)
+
+markdown
+Copy
+where:
+- `g` is gravitational acceleration (≈ 9.81 m/s²),
+- `(meanDown - meanUp)` should ideally be `2*g` if there were no scale error.
+
+2. **Gyroscope**  
+
+S_gyro = [ (meanUp - meanDown) - 2 * omega_e * sin(phi) ] / [ 2 * omega_e * sin(phi) ]
+
+markdown
+Copy
+where:
+- `omega_e` is Earth’s rotation rate (in deg/s),
+- `phi` is the local latitude (in radians),
+- `(meanUp - meanDown)` should ideally be `2 * omega_e * sin(phi)` if there were no scale error.
+
+---
+
+### Correcting Raw Measurements
+
+Once you have `b` (bias) and `S` (scale factor), you can correct any raw measurement `m` using:
+
+- **Down orientation**:
+corrected = (m - b) / (1 + S)
+
+markdown
+Copy
+- **Up orientation**:
+corrected = (b - m) / (1 + S)
+
+markdown
+Copy
+
+where:
+- `m` is the raw measurement (gyro or accel),
+- `b` is the computed bias,
+- `S` is the computed scale factor,
+- “Down” means the sensor axis was oriented so that it should measure +g (for accelerometer) or +earth rotation (for gyroscope),
+- “Up” means the sensor axis was oriented the opposite way.
+
+By applying these formulas, you remove the sensor’s bias and adjust for scale errors, resulting in a corrected (“true”) measurement for the x-axis.
+----
 ## Repository Branches
 
 - **general-six-position-static**  
